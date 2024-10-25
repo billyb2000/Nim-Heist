@@ -1,0 +1,185 @@
+import time 
+import random
+import sys
+
+def print_nim_art():
+    art = """
+███╗░░██╗██╗███╗░░░███╗  ██╗░░██╗███████╗██╗░██████╗████████╗
+████╗░██║██║████╗░████║  ██║░░██║██╔════╝██║██╔════╝╚══██╔══╝
+██╔██╗██║██║██╔████╔██║  ███████║█████╗░░██║╚█████╗░░░░██║░░░
+██║╚████║██║██║╚██╔╝██║  ██╔══██║██╔══╝░░██║░╚═══██╗░░░██║░░░
+██║░╚███║██║██║░╚═╝░██║  ██║░░██║███████╗██║██████╔╝░░░██║░░░
+╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝  ╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░░░░╚═╝░░░
+    """
+    print(art)
+
+# activate the function that prints the nim art
+print_nim_art()
+
+def loading_animation():
+    loading_text = "game loading"
+    dots = ""
+    loading_count = 0
+    while loading_count <12:
+        sys.stdout.write(f"\r{loading_text}{dots}")
+        sys.stdout.flush()
+        
+        time.sleep(0.3)
+        dots +="."
+        loading_count +=1
+        if len(dots) >4:
+            dots = ""
+            
+try:
+    loading_animation()
+except KeyboardInterrupt:
+    print("\nmgame started!\nWelcome to Nim")
+    
+
+
+loading_art = """
+.-'--`-._
+'-O---O--'
+"""
+
+# Start with empty trails on all lines of the car
+trail = ["", ""]
+
+for _ in range(100):
+    # Move the cursor up by 2 lines (the number of lines in the car)
+    sys.stdout.write("\033[F" * 2)
+
+    # Print the trail and the car together as a block of text
+    sys.stdout.write(f"{trail[0]}.-'--`-._\n")
+    sys.stdout.write(f"{trail[1]}'-O---O--'\n")
+    sys.stdout.flush()
+
+    # Add to the trail for each line
+    trail = [t + "=" for t in trail]
+    time.sleep(0.05)  # Adjust the speed as needed
+    
+    
+#game intro
+print("\ngame started!\nWelcome to Nim Heist")
+time.sleep(2)
+print("you find yourself in the safe of the worlds largest bank....")
+time.sleep(2.5)
+print("your partner says he wants more money but you refuse so he offers to play nim for the money")
+offer = int(input("do you accept his offer 1.yes  2.no: "))
+if offer == 1:
+    print("ok good luck")
+elif offer == 2:
+    print("he shoots you and takes the money")
+    time.sleep(1.5)
+    print("GAME OVER")
+    exit()
+elif offer <0:
+    print("invalid answer")
+    exit()
+elif offer >2:
+    print("invalid answer")
+    exit()
+
+
+#show new players game instructions 
+time.sleep(2)
+player_skill = int(input("have you played Nim before 1. yes  2. no: "))
+time.sleep(1)
+if player_skill == 1:
+    print("good, lets play!")
+if player_skill == 2:
+    print("thats too bad, here are the instructions")
+    time.sleep(3)
+    print("In the game of Nim, players take turns removing any number of objects from a single pile.")
+    time.sleep(5)
+    print("On each turn, a player must take at least one object, but they can take as many as they want, as long as it’s from one pile. ")
+    time.sleep(6)
+    print("The game continues until all the objects are gone, and the player forced to take the last object loses.")
+    time.sleep(4)
+    print("Nim is simple but strategic.")
+    time.sleep(2)
+    print("your goal is to leave your opponent in a position where they are forced to take the last object!")
+    time.sleep(3)
+if player_skill <1:
+    print("error")
+    time.sleep(1)
+    print("GAME OVER")
+    exit()
+if player_skill >2:
+    print("error")
+    time.sleep(1)
+    print("GAME OVER")
+    exit()
+
+
+#define the players names   
+player1 = input("player 1 name: ")
+player2 = input("player 2 name: ")
+time.sleep(1)
+
+def nim_game():
+    # Initialize the game with a random number of piles (between 3 and 7)
+    num_piles = random.randint(3, 7)
+    piles = [random.randint(1, 10) for _ in range(num_piles)]  # Random stones between 1 and 10 for each pile
+    return num_piles, piles
+
+# Initialize the game
+num_piles, piles = nim_game()
+
+print(f"Welcome to the Nim Heist! There are {num_piles} piles of coins: {piles}")
+time.sleep(2.5)
+# Randomly choose which player starts
+player_turn = random.choice([player1, player2])
+print(f"{player_turn} will start the game!")
+time.sleep(2)
+
+while sum(piles) > 0:
+    print("\nCurrent piles of coins:")
+    for i, pile in enumerate(piles):
+        print(f"Pile {i + 1}: {'O' * pile} ({pile} coins)")
+    
+    print(f"\n{player_turn}'s turn.")
+
+    # Choose a pile
+    pile_choice = int(input(f"Choose a pile (1-{len(piles)}): ")) - 1
+
+    # Ensure the chosen pile has coins
+    while pile_choice < 0 or pile_choice >= len(piles) or piles[pile_choice] == 0:
+        print("That pile is empty or invalid! Choose another pile.")
+        pile_choice = int(input(f"Choose a pile (1-{len(piles)}): ")) - 1
+
+    # Choose how many stones to remove
+    stones_to_remove = int(input(f"How many coins to remove from pile {pile_choice + 1} (1-{piles[pile_choice]}): "))
+    
+    # Ensure the player removes a valid number of coins
+    while stones_to_remove <= 0 or stones_to_remove > piles[pile_choice]:
+        print("Invalid number of stones. Try again.")
+        stones_to_remove = int(input(f"How many coins to remove from pile {pile_choice + 1} (1-{piles[pile_choice]}): "))
+
+    # Remove coins from the chosen pile
+    piles[pile_choice] -= stones_to_remove
+
+    # Check if game is over (no coins left)
+    if sum(piles) == 0:
+        print(f"\n{player_turn} is forced to take the last coin.")
+        time.sleep(3)
+        print(f"\n{player_turn} loses, gets no money and is sent to jail")
+        time.sleep(2.4)
+        player_turn = player2 if player_turn ==player1 else player1
+        print(f"\n{player_turn} is the WINNER!")
+        time.sleep(2)
+        print(f"{player_turn} takes the money and moves to asia to escape the cops")
+        time.sleep(3.4)
+        print("\nGame Over thanks for playing....")
+        time.sleep(2.1)
+        print_nim_art()
+        break
+
+    # Switch player
+    player_turn = player2 if player_turn == player1 else player1
+    
+    
+    
+    
+    
+    
